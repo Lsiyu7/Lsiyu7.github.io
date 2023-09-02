@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>大端小端序 on Siyu&#39;s Blog</title>
+    <link>https://Lsiyu7.github.io/en/tags/%E5%A4%A7%E7%AB%AF%E5%B0%8F%E7%AB%AF%E5%BA%8F/</link>
+    <description>Recent content in 大端小端序 on Siyu&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 02 Sep 2023 22:27:03 +0800</lastBuildDate><atom:link href="https://Lsiyu7.github.io/en/tags/%E5%A4%A7%E7%AB%AF%E5%B0%8F%E7%AB%AF%E5%BA%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>大端小端序转换</title>
+      <link>https://Lsiyu7.github.io/en/posts/tech/%E5%A4%A7%E7%AB%AF%E5%B0%8F%E7%AB%AF%E5%BA%8F%E8%BD%AC%E6%8D%A2/</link>
+      <pubDate>Sat, 02 Sep 2023 22:27:03 +0800</pubDate>
+      
+      <guid>https://Lsiyu7.github.io/en/posts/tech/%E5%A4%A7%E7%AB%AF%E5%B0%8F%E7%AB%AF%E5%BA%8F%E8%BD%AC%E6%8D%A2/</guid>
+      <description>网络字节序与地址变换 不同的 CPU 中，4 字节整数值1在内存空间保存方式是不同的。 有些 CPU 这样保存： 1 00000000 00000000 00000000 00000001 有些 CPU 这样保存： 1 00000001 00000000 00000000 00000000 两种一种是顺序</description>
+    </item>
+    
+  </channel>
+</rss>

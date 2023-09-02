@@ -6,7 +6,34 @@
     <description>Recent content in 👨🏻‍💻技术 on Siyu&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 02 Sep 2023 15:09:36 +0800</lastBuildDate><atom:link href="https://Lsiyu7.github.io/en/posts/tech/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 02 Sep 2023 22:27:03 +0800</lastBuildDate><atom:link href="https://Lsiyu7.github.io/en/posts/tech/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>大端小端序转换</title>
+      <link>https://Lsiyu7.github.io/en/posts/tech/%E5%A4%A7%E7%AB%AF%E5%B0%8F%E7%AB%AF%E5%BA%8F%E8%BD%AC%E6%8D%A2/</link>
+      <pubDate>Sat, 02 Sep 2023 22:27:03 +0800</pubDate>
+      
+      <guid>https://Lsiyu7.github.io/en/posts/tech/%E5%A4%A7%E7%AB%AF%E5%B0%8F%E7%AB%AF%E5%BA%8F%E8%BD%AC%E6%8D%A2/</guid>
+      <description>网络字节序与地址变换 不同的 CPU 中，4 字节整数值1在内存空间保存方式是不同的。 有些 CPU 这样保存： 1 00000000 00000000 00000000 00000001 有些 CPU 这样保存： 1 00000001 00000000 00000000 00000000 两种一种是顺序</description>
+    </item>
+    
+    <item>
+      <title>Git_base</title>
+      <link>https://Lsiyu7.github.io/en/posts/tech/git_base/</link>
+      <pubDate>Sat, 02 Sep 2023 22:22:18 +0800</pubDate>
+      
+      <guid>https://Lsiyu7.github.io/en/posts/tech/git_base/</guid>
+      <description>git 工作流 git 三个模块 ：GitHub local desk git clone &amp;lt;master&amp;gt; git checkout -b local &amp;lt;my_filename&amp;gt; //checkout 切换分支 ，-b切换到一个不存在的分支，并创建 将修改后的文件告诉git git diff //比较两个代</description>
+    </item>
+    
+    <item>
+      <title>Cmake</title>
+      <link>https://Lsiyu7.github.io/en/posts/tech/cmake/</link>
+      <pubDate>Sat, 02 Sep 2023 22:19:19 +0800</pubDate>
+      
+      <guid>https://Lsiyu7.github.io/en/posts/tech/cmake/</guid>
+      <description>基础语法 尽量保证每一个文件夹有个CMakeLists.txt [[CMake Practice.pdf]] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38</description>
+    </item>
+    
     <item>
       <title>Gdb</title>
       <link>https://Lsiyu7.github.io/en/posts/tech/gdb/</link>
