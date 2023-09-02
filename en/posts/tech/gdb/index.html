@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Gdb | Siyu&#39;s Blog</title>
+<meta name="keywords" content="gdb">
+<meta name="description" content="gcc/g&#43;&#43;常用编译选项 选项 作用 -c 生成可目标文件，但不进行链接 -o 指定生成文件的文件名 -g 在目标文件中添加调试信息，便于gdb调试或objdu">
+<meta name="author" content="Siyu">
+<link rel="canonical" href="https://Lsiyu7.github.io/en/posts/tech/gdb/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://Lsiyu7.github.io/img/Q.gif">
+<link rel="icon" type="image/png" sizes="16x16" href="https://Lsiyu7.github.io/img/Q.gif">
+<link rel="icon" type="image/png" sizes="32x32" href="https://Lsiyu7.github.io/img/Q.gif">
+<link rel="apple-touch-icon" href="https://Lsiyu7.github.io/Q.gif">
+<link rel="mask-icon" href="https://Lsiyu7.github.io/Q.gif">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Gdb" />
+<meta property="og:description" content="gcc/g&#43;&#43;常用编译选项 选项 作用 -c 生成可目标文件，但不进行链接 -o 指定生成文件的文件名 -g 在目标文件中添加调试信息，便于gdb调试或objdu" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://Lsiyu7.github.io/en/posts/tech/gdb/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-09-02T15:09:36+08:00" />
+<meta property="article:modified_time" content="2023-09-02T15:09:36+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Gdb"/>
+<meta name="twitter:description" content="gcc/g&#43;&#43;常用编译选项 选项 作用 -c 生成可目标文件，但不进行链接 -o 指定生成文件的文件名 -g 在目标文件中添加调试信息，便于gdb调试或objdu"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  5 ,
+      "name": "Gdb",
+      "item": "https://Lsiyu7.github.io/en/posts/tech/gdb/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Gdb",
+  "name": "Gdb",
+  "description": "gcc/g++常用编译选项 选项 作用 -c 生成可目标文件，但不进行链接 -o 指定生成文件的文件名 -g 在目标文件中添加调试信息，便于gdb调试或objdu",
+  "keywords": [
+    "gdb"
+  ],
+  "articleBody": "gcc/g++常用编译选项 选项 作用 -c 生成可目标文件，但不进行链接 -o 指定生成文件的文件名 -g 在目标文件中添加调试信息，便于gdb调试或objdump反汇编 -Wall 显示所有的警告信息(建议使用) -Werror 视警告为错误，出现警告即放弃编译 -w 不显示任何警告信息(不建议使用) -v 显示编译步骤 -On (n=0,1,2,3) 设置编译器优化等级，O0为不优化，O3为最高等级优化，O1为默认优化等级 -L 指定库文件的搜索目录 -l (小写的L)链接某一库 -I (大写的i)指定头文件路径 -D 定义宏，例如-DAAA=1,-DBBBB -U 取消宏定义，例如-UAAA gdb常用调试命命令 我们的可执行文件要能够被gdb调试，必须在编译时加上调试信息，也即是加上-g选项.\n1\n$ gcc -g example.c -o example\n如上我们生成了一个带有调试信息的可执行文件example,要调试example可以执行下列命令:\n1\n$ gdb example\n这样我们就进入了gdb的调试命令行，如下所示:\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\nGNU gdb (Ubuntu 8.1-0ubuntu3) 8.1.0.20180409-git\nCopyright (C) 2018 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later This is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law. Type \"show copying\"\nand \"show warranty\" for details.\nThis GDB was configured as \"x86_64-linux-gnu\".\nType \"show configuration\" for configuration details.\nFor bug reporting instructions, please see:\n.\nFind the GDB manual and other documentation resources online at:\n.\nFor help, type \"help\".\nType \"apropos word\" to search for commands related to \"word\"...\nReading symbols from example...done.\n(gdb)\n如上可以看到命令行提示符为(gdb),接着我们就可以在这个gdb的命令行提示符上面输入各种gdb的调试命令了(补充:这里也可以在shell中输入gdb,然后回车，这样直接进入到gdb的调试命令行，之后可以通过file example命令来载入待调试的可执行程序)。\n下面我们就以如下的程序为例，详细的看下，在gdb的调试命令行中我们都有那些命令可用:\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n#include long func(int a){\nlong sum = 0;\nfor(int j=1;j\u003c=a;j++){\nsum += j;\n}\nreturn sum;\n}\nint main(void){\nint a =100;\nlong sum = func(a);\nprintf(\"%ld\",sum);\nreturn 0;\n}\n查看源码 载入待调试的可执行文件之后，在gdb的命令行中输入list或者其简写l可以查看到程序的源码以及行号，如下:\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n(gdb) l\n1#include 2\n3long func(int a){\n4 long sum = 0;\n5 for(int j=1;j\u003c=a;j++){\n6 sum += j;\n7 }\n8 return sum;\n9}\n10\n(gdb) 11int main(void){\n12 int a =100;\n13 long sum = func(a);\n14 printf(\"%ld\",sum);\n15 return 0;\n16}\n(gdb) Line number 17 out of range; example.c has 16 lines.\n(gdb)\n如上输入l之后，默认会显示10行源代码，按回车之后会显示接下来的10行,直到文件的末尾。\n添加断点 在gdb下添加断点使用命令break或简写 b，有下面几个常见用法（这里统一用 b:\n1\n2\n3\n4\nb 函数名\nb 行号\nb 文件名:行号\nb 行号 if条件\n比如我们在 main函数和func函数上各添加一个断点：\n1\n2\n3\n4\n(gdb) b main\nBreakpoint 1 at 0x685: file example.c, line 12.\n(gdb) break func\nBreakpoint 2 at 0x651: file example.c, line 4.\n如上我们成功加上了两个断点，在正确加上断点之后，会对应有一行输出，告诉我们断点的内存地址，断点对应的源文件名和行号。\n查看断点 在加上断点之后，我们可以通过info break命令查看断点的信息:\n1\n2\n3\n4\n(gdb) info break\nNum Type Disp Enb Address What\n1 breakpoint keep y 0x0000000000000685 in main at example.c:12\n2 breakpoint keep y 0x0000000000000651 in func at example.c:4\n禁用和解禁断点 通过disable 来禁用指定Num的断点，如下我们禁用1号断点:\n1\n2\n3\n4\n5\n(gdb) disable 1\n(gdb) info break\nNum Type Disp Enb Address What\n1 breakpoint keep n 0x0000000000000685 in main at example.c:12\n2 breakpoint keep y 0x0000000000000651 in func at example.c:4\n如上，disable 1之后，断点1的Enb列由之前的y变成了n，说明断点1已被禁用。\n通过eable 可以来解禁断点，如下我们对刚才禁用的断点1解禁:\n1\n2\n3\n4\n5\n(gdb) enable 1\n(gdb) info break\nNum Type Disp Enb Address What\n1 breakpoint keep y 0x0000000000000685 in main at example.c:12\n2 breakpoint keep y 0x0000000000000651 in func at example.c:4\n如上，断点1的Enb列又变成y了，它被成功解禁。\n删除断点 我们可以用delete 命令来删除掉一个断点，如下我们删除断点1:\n1\n2\n3\n4\n(gdb) delete 1\n(gdb) info break\nNum Type Disp Enb Address What\n2 breakpoint keep y 0x0000000000000651 in func at example.c:4\n如上，断点1被成功删除。\n启动程序 我们可以使用run命令或者简写r来启动程序的执行:\n1\n2\n3\n4\n5\n(gdb) r\nStarting program: /home/andrew/example Breakpoint 2, func (a=100) at example.c:4\n4 long sum = 0;\n如上，程序执行到断点2的时候就停止执行了。\n查看变量的值 p /print 可以查看某一个变量的当前值:\n1\n2\n(gdb) p sum\n$1 = 0\n如上，当前sum的值为0\n单步执行 next命令或者n可以单步执行，如下:\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n(gdb) n\n5 for(int j=1;j\u003c=a;j++){\n(gdb) p sum\n$2 = 0\n(gdb) n\n6 sum += j;\n(gdb) p sum\n$3 = 0\n(gdb) n\n5 for(int j=1;j\u003c=a;j++){\n(gdb) p sum\n$4 = 1\n(gdb) n\n6 sum += j;\n(gdb) p sum\n$5 = 1\n(gdb) n\n5 for(int j=1;j\u003c=a;j++){\n(gdb) p sum\n$6 = 3\n跳入跳出函数 1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n(gdb) break 13\nBreakpoint 1 at 0x693: file example.c, line 13.\n(gdb) r\nStarting program: /home/andrew/example Breakpoint 1, main () at example.c:13\n13 long sum = func(a);\n(gdb) s\nfunc (a=100) at example.c:4\n4 long sum = 0;\n(gdb) n\n5 for(int j=1;j\u003c=a;j++){\n(gdb) n\n6 sum += j;\n(gdb) n\n5 for(int j=1;j\u003c=a;j++){\n(gdb) n\n6 sum += j;\n(gdb) finish\nRun till exit from #0 func (a=100) at example.c:6\n0x000055555555469d in main () at example.c:13\n13 long sum = func(a);\nValue returned is $1 = 5050\n(gdb) n\n14 printf(\"%ld\",sum);\n(gdb)\n如上，我在func()函数调用行加上了断点，然后r开始执行程序，之后程序在断点处停住，此时我执行step命令或其简写s来跳入func()函数内部调试，在内部依然像执行外部调试一样，如果要从函数跳出则执行finished，这时会导致函数执行完毕，并且打印出一些函数的返回信息，并且程序停在函数后的第一条语句处。\n监控变量 使用watch 命令可以实现监控变量，使用info watch命令可以查看监控的变量。同时break所拥有的enable,disable,delete等动词对于watch依然使用，且用法大同小异。这里就不再赘述。\n显示变量的值 使用display 命令可以在每一步执行之后打印变量的当前值,如下:\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n(gdb) start Temporary breakpoint 1 at 0x685: file example.c, line 12.\nStarting program: /home/andrew/example Temporary breakpoint 1, main () at example.c:12\n12 int a =100, b =50;\n(gdb) display sum\n1: sum = 140737488346112\n(gdb) n\n13 long sum = func(a);\n1: sum = 140737488346112\n(gdb) 14 printf(\"%ld\",sum);\n1: sum = 5050\n(gdb) 16 long sum2 = func(b);\n1: sum = 5050\n(gdb) 17 printf(\"%ld\",sum2);\n1: sum = 5050\n(gdb) 18 return 0;\n1: sum = 5050\n(gdb)\n进入shell shell命令可以让我们从gdb命令行环境进入到shell的命令行环境，当我们在shell命令行环境中输入exit退出后，我们就又回到了之前的gdb命令行环境了。\n可视化调试 在gdb命令行环境中输入wi命令，可以让我们进入可视化调试环境，这个环境可以看到源代码，所使用的调试命令与上面讲到的一致。\n",
+  "wordCount" : "2372",
+  "inLanguage": "en",
+  "datePublished": "2023-09-02T15:09:36+08:00",
+  "dateModified": "2023-09-02T15:09:36+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "Siyu"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://Lsiyu7.github.io/en/posts/tech/gdb/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Siyu's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://Lsiyu7.github.io/img/Q.gif"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://Lsiyu7.github.io/en/" accesskey="h" title="Siyu&#39;s Blog (Alt + H)">Siyu&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://Lsiyu7.github.io/en/search" title="🔍搜索">
+                    <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://Lsiyu7.github.io/en/" title="🏠主页">
+                    <span>🏠主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://Lsiyu7.github.io/en/posts" title="📚文章">
+                    <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://Lsiyu7.github.io/en/archives/" title="⏱时间轴">
+                    <span>⏱时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://Lsiyu7.github.io/en/tags" title="🔖标签">
+                    <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://Lsiyu7.github.io/en/about" title="🙋🏻‍♂️关于">
+                    <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://Lsiyu7.github.io/en/" title="">
+                    <span></span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://Lsiyu7.github.io/en/">Home</a></div>
+    <h1 class="post-title">
+      Gdb
+    </h1>
+    <div class="post-meta"><span title='2023-09-02 15:09:36 +0800 CST'>September 2, 2023</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;Siyu
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#gccg%e5%b8%b8%e7%94%a8%e7%bc%96%e8%af%91%e9%80%89%e9%a1%b9" aria-label="gcc/g&#43;&#43;常用编译选项">gcc/g++常用编译选项</a></li>
+                <li>
+                    <a href="#httpsandrewpqcgithubio20181125gcc-and-gdbgdbe5b8b8e794a8e8b083e8af95e591bde591bde4bba4-gdb%e5%b8%b8%e7%94%a8%e8%b0%83%e8%af%95%e5%91%bd%e5%91%bd%e4%bb%a4gdb%e5%b8%b8%e7%94%a8%e8%b0%83%e8%af%95%e5%91%bd%e5%91%bd%e4%bb%a4" aria-label="gdb常用调试命命令"><a href="https://andrewpqc.github.io/2018/11/25/gcc-and-gdb/#gdb%E5%B8%B8%E7%94%A8%E8%B0%83%E8%AF%95%E5%91%BD%E5%91%BD%E4%BB%A4" title="gdb常用调试命命令"></a>gdb常用调试命命令</a><ul>
+                        
+                <li>
+                    <a href="#%e6%9f%a5%e7%9c%8b%e6%ba%90%e7%a0%81" aria-label="查看源码">查看源码</a></li>
+                <li>
+                    <a href="#%e6%b7%bb%e5%8a%a0%e6%96%ad%e7%82%b9" aria-label="添加断点">添加断点</a></li>
+                <li>
+                    <a href="#%e6%9f%a5%e7%9c%8b%e6%96%ad%e7%82%b9" aria-label="查看断点">查看断点</a></li>
+                <li>
+                    <a href="#%e7%a6%81%e7%94%a8%e5%92%8c%e8%a7%a3%e7%a6%81%e6%96%ad%e7%82%b9" aria-label="禁用和解禁断点">禁用和解禁断点</a></li>
+                <li>
+                    <a href="#%e5%88%a0%e9%99%a4%e6%96%ad%e7%82%b9" aria-label="删除断点">删除断点</a></li>
+                <li>
+                    <a href="#%e5%90%af%e5%8a%a8%e7%a8%8b%e5%ba%8f" aria-label="启动程序">启动程序</a></li>
+                <li>
+                    <a href="#%e6%9f%a5%e7%9c%8b%e5%8f%98%e9%87%8f%e7%9a%84%e5%80%bc" aria-label="查看变量的值">查看变量的值</a></li>
+                <li>
+                    <a href="#%e5%8d%95%e6%ad%a5%e6%89%a7%e8%a1%8c" aria-label="单步执行">单步执行</a></li>
+                <li>
+                    <a href="#%e8%b7%b3%e5%85%a5%e8%b7%b3%e5%87%ba%e5%87%bd%e6%95%b0" aria-label="跳入跳出函数">跳入跳出函数</a></li>
+                <li>
+                    <a href="#%e7%9b%91%e6%8e%a7%e5%8f%98%e9%87%8f" aria-label="监控变量">监控变量</a></li>
+                <li>
+                    <a href="#%e6%98%be%e7%a4%ba%e5%8f%98%e9%87%8f%e7%9a%84%e5%80%bc" aria-label="显示变量的值">显示变量的值</a></li>
+                <li>
+                    <a href="#%e8%bf%9b%e5%85%a5shell" aria-label="进入shell">进入shell</a></li>
+                <li>
+                    <a href="#%e5%8f%af%e8%a7%86%e5%8c%96%e8%b0%83%e8%af%95" aria-label="可视化调试">可视化调试</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="gccg常用编译选项">gcc/g++常用编译选项<a hidden class="anchor" aria-hidden="true" href="#gccg常用编译选项">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-c</td>
+<td>生成可目标文件，但不进行链接</td>
+</tr>
+<tr>
+<td>-o</td>
+<td>指定生成文件的文件名</td>
+</tr>
+<tr>
+<td>-g</td>
+<td>在目标文件中添加调试信息，便于gdb调试或objdump反汇编</td>
+</tr>
+<tr>
+<td>-Wall</td>
+<td>显示所有的警告信息(建议使用)</td>
+</tr>
+<tr>
+<td>-Werror</td>
+<td>视警告为错误，出现警告即放弃编译</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>不显示任何警告信息(不建议使用)</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>显示编译步骤</td>
+</tr>
+<tr>
+<td>-On</td>
+<td>(n=0,1,2,3) 设置编译器优化等级，O0为不优化，O3为最高等级优化，O1为默认优化等级</td>
+</tr>
+<tr>
+<td>-L</td>
+<td>指定库文件的搜索目录</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>(小写的L)链接某一库</td>
+</tr>
+<tr>
+<td>-I</td>
+<td>(大写的i)指定头文件路径</td>
+</tr>
+<tr>
+<td>-D</td>
+<td>定义宏，例如-DAAA=1,-DBBBB</td>
+</tr>
+<tr>
+<td>-U</td>
+<td>取消宏定义，例如-UAAA</td>
+</tr>
+</tbody>
+</table>
+<h2 id="httpsandrewpqcgithubio20181125gcc-and-gdbgdbe5b8b8e794a8e8b083e8af95e591bde591bde4bba4-gdb常用调试命命令gdb常用调试命命令"><a href="https://andrewpqc.github.io/2018/11/25/gcc-and-gdb/#gdb%E5%B8%B8%E7%94%A8%E8%B0%83%E8%AF%95%E5%91%BD%E5%91%BD%E4%BB%A4" title="gdb常用调试命命令"></a>gdb常用调试命命令<a hidden class="anchor" aria-hidden="true" href="#httpsandrewpqcgithubio20181125gcc-and-gdbgdbe5b8b8e794a8e8b083e8af95e591bde591bde4bba4-gdb常用调试命命令gdb常用调试命命令">#</a></h2>
+<p>我们的可执行文件要能够被gdb调试，必须在编译时加上调试信息，也即是加上<code>-g</code>选项.</p>
+<table><tbody><tr><td><pre><span>1</span><br></pre></td><td><pre><span>$ gcc -g example.c -o example</span><br></pre></td></tr></tbody></table>
+<p>如上我们生成了一个带有调试信息的可执行文件example,要调试example可以执行下列命令:</p>
+<table><tbody><tr><td><pre><span>1</span><br></pre></td><td><pre><span>$ gdb example</span><br></pre></td></tr></tbody></table>
+<p>这样我们就进入了gdb的调试命令行，如下所示:</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br><span>5</span><br><span>6</span><br><span>7</span><br><span>8</span><br><span>9</span><br><span>10</span><br><span>11</span><br><span>12</span><br><span>13</span><br><span>14</span><br><span>15</span><br><span>16</span><br></pre></td><td><pre><span>GNU gdb (Ubuntu 8.1-0ubuntu3) 8.1.0.20180409-git</span><br><span>Copyright (C) 2018 Free Software Foundation, Inc.</span><br><span>License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;</span><br><span>This is free software: you are free to change and redistribute it.</span><br><span>There is NO WARRANTY, to the extent permitted by law.  Type "show copying"</span><br><span>and "show warranty" for details.</span><br><span>This GDB was configured as "x86_64-linux-gnu".</span><br><span>Type "show configuration" for configuration details.</span><br><span>For bug reporting instructions, please see:</span><br><span>&lt;http://www.gnu.org/software/gdb/bugs/&gt;.</span><br><span>Find the GDB manual and other documentation resources online at:</span><br><span>&lt;http://www.gnu.org/software/gdb/documentation/&gt;.</span><br><span>For help, type "help".</span><br><span>Type "apropos word" to search for commands related to "word"...</span><br><span>Reading symbols from example...done.</span><br><span>(gdb)</span><br></pre></td></tr></tbody></table>
+<p>如上可以看到命令行提示符为<code>(gdb)</code>,接着我们就可以在这个gdb的命令行提示符上面输入各种gdb的调试命令了(补充:这里也可以在shell中输入<code>gdb</code>,然后回车，这样直接进入到gdb的调试命令行，之后可以通过<code>file example</code>命令来载入待调试的可执行程序)。</p>
+<p>下面我们就以如下的程序为例，详细的看下，在gdb的调试命令行中我们都有那些命令可用:</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br><span>5</span><br><span>6</span><br><span>7</span><br><span>8</span><br><span>9</span><br><span>10</span><br><span>11</span><br><span>12</span><br><span>13</span><br><span>14</span><br><span>15</span><br><span>16</span><br></pre></td><td><pre><span><span>#<span>include</span> <span>&lt;stdio.h&gt;</span></span></span><br><span></span><br><span><span><span>long</span> <span>func</span><span>(<span>int</span> a)</span></span>{</span><br><span>    <span>long</span> sum = <span>0</span>;</span><br><span>    <span>for</span>(<span>int</span> j=<span>1</span>;j&lt;=a;j++){</span><br><span>    sum += j;</span><br><span>    }</span><br><span>    <span>return</span> sum;</span><br><span>}</span><br><span></span><br><span><span><span>int</span> <span>main</span><span>(<span>void</span>)</span></span>{</span><br><span>    <span>int</span> a =<span>100</span>;</span><br><span>    <span>long</span> sum = func(a);</span><br><span>    <span>printf</span>(<span>"%ld"</span>,sum);</span><br><span>    <span>return</span> <span>0</span>;</span><br><span>}</span><br></pre></td></tr></tbody></table>
+<h3 id="查看源码">查看源码<a hidden class="anchor" aria-hidden="true" href="#查看源码">#</a></h3>
+<p>载入待调试的可执行文件之后，在gdb的命令行中输入<code>list</code>或者其简写<code>l</code>可以查看到程序的源码以及行号，如下:</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br><span>5</span><br><span>6</span><br><span>7</span><br><span>8</span><br><span>9</span><br><span>10</span><br><span>11</span><br><span>12</span><br><span>13</span><br><span>14</span><br><span>15</span><br><span>16</span><br><span>17</span><br><span>18</span><br><span>19</span><br><span>20</span><br><span>21</span><br></pre></td><td><pre><span>(gdb) l</span><br><span>1#include &lt;stdio.h&gt;</span><br><span>2</span><br><span>3long func(int a){</span><br><span>4    long sum = 0;</span><br><span>5    for(int j=1;j&lt;=a;j++){</span><br><span>6    sum += j;</span><br><span>7    }</span><br><span>8    return sum;</span><br><span>9}</span><br><span>10</span><br><span>(gdb) </span><br><span>11int main(void){</span><br><span>12    int a =100;</span><br><span>13    long sum = func(a);</span><br><span>14    printf("%ld",sum);</span><br><span>15    return 0;</span><br><span>16}</span><br><span>(gdb) </span><br><span>Line number 17 out of range; example.c has 16 lines.</span><br><span>(gdb)</span><br></pre></td></tr></tbody></table>
+<p>如上输入<code>l</code>之后，默认会显示10行源代码，按回车之后会显示接下来的10行,直到文件的末尾。</p>
+<h3 id="添加断点">添加断点<a hidden class="anchor" aria-hidden="true" href="#添加断点">#</a></h3>
+<p>在gdb下添加断点使用命令<code>break</code>或简写 <code>b</code>，有下面几个常见用法（这里统一用 b:</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br></pre></td><td><pre><span>b 函数名</span><br><span>b 行号</span><br><span>b 文件名:行号</span><br><span>b 行号 if条件</span><br></pre></td></tr></tbody></table>
+<p>比如我们在 main函数和func函数上各添加一个断点：</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br></pre></td><td><pre><span>(gdb) b main</span><br><span>Breakpoint 1 at 0x685: file example.c, line 12.</span><br><span>(gdb) break func</span><br><span>Breakpoint 2 at 0x651: file example.c, line 4.</span><br></pre></td></tr></tbody></table>
+<p>如上我们成功加上了两个断点，在正确加上断点之后，会对应有一行输出，告诉我们断点的内存地址，断点对应的源文件名和行号。</p>
+<h3 id="查看断点">查看断点<a hidden class="anchor" aria-hidden="true" href="#查看断点">#</a></h3>
+<p>在加上断点之后，我们可以通过<code>info break</code>命令查看断点的信息:</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br></pre></td><td><pre><span>(gdb) info break</span><br><span>Num     Type           Disp Enb Address            What</span><br><span>1       breakpoint     keep y   0x0000000000000685 in main at example.c:12</span><br><span>2       breakpoint     keep y   0x0000000000000651 in func at example.c:4</span><br></pre></td></tr></tbody></table>
+<h3 id="禁用和解禁断点">禁用和解禁断点<a hidden class="anchor" aria-hidden="true" href="#禁用和解禁断点">#</a></h3>
+<p>通过<code>disable &lt;break number&gt;</code>来禁用指定Num的断点，如下我们禁用1号断点:</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br><span>5</span><br></pre></td><td><pre><span>(gdb) disable 1</span><br><span>(gdb) info break</span><br><span>Num     Type           Disp Enb Address            What</span><br><span>1       breakpoint     keep n   0x0000000000000685 in main at example.c:12</span><br><span>2       breakpoint     keep y   0x0000000000000651 in func at example.c:4</span><br></pre></td></tr></tbody></table>
+<p>如上，<code>disable 1</code>之后，断点1的<code>Enb</code>列由之前的<code>y</code>变成了<code>n</code>，说明断点1已被禁用。</p>
+<p>通过<code>eable &lt;break number&gt;</code>可以来解禁断点，如下我们对刚才禁用的断点1解禁:</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br><span>5</span><br></pre></td><td><pre><span>(gdb) enable 1</span><br><span>(gdb) info break</span><br><span>Num     Type           Disp Enb Address            What</span><br><span>1       breakpoint     keep y   0x0000000000000685 in main at example.c:12</span><br><span>2       breakpoint     keep y   0x0000000000000651 in func at example.c:4</span><br></pre></td></tr></tbody></table>
+<p>如上，断点1的Enb列又变成y了，它被成功解禁。</p>
+<h3 id="删除断点">删除断点<a hidden class="anchor" aria-hidden="true" href="#删除断点">#</a></h3>
+<p>我们可以用<code>delete &lt;break number&gt;</code>命令来删除掉一个断点，如下我们删除断点1:</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br></pre></td><td><pre><span>(gdb) delete 1</span><br><span>(gdb) info break</span><br><span>Num     Type           Disp Enb Address            What</span><br><span>2       breakpoint     keep y   0x0000000000000651 in func at example.c:4</span><br></pre></td></tr></tbody></table>
+<p>如上，断点1被成功删除。</p>
+<h3 id="启动程序">启动程序<a hidden class="anchor" aria-hidden="true" href="#启动程序">#</a></h3>
+<p>我们可以使用<code>run</code>命令或者简写<code>r</code>来启动程序的执行:</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br><span>5</span><br></pre></td><td><pre><span>(gdb) r</span><br><span>Starting program: /home/andrew/example </span><br><span></span><br><span>Breakpoint 2, func (a=100) at example.c:4</span><br><span>4    long sum = 0;</span><br></pre></td></tr></tbody></table>
+<p>如上，程序执行到断点2的时候就停止执行了。</p>
+<h3 id="查看变量的值">查看变量的值<a hidden class="anchor" aria-hidden="true" href="#查看变量的值">#</a></h3>
+<p><code>p &lt;variable name&gt;</code>/<code>print &lt;variable name&gt;</code>可以查看某一个变量的当前值:</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br></pre></td><td><pre><span>(gdb) p sum</span><br><span>$1 = 0</span><br></pre></td></tr></tbody></table>
+<p>如上，当前sum的值为0</p>
+<h3 id="单步执行">单步执行<a hidden class="anchor" aria-hidden="true" href="#单步执行">#</a></h3>
+<p><code>next</code>命令或者<code>n</code>可以单步执行，如下:</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br><span>5</span><br><span>6</span><br><span>7</span><br><span>8</span><br><span>9</span><br><span>10</span><br><span>11</span><br><span>12</span><br><span>13</span><br><span>14</span><br><span>15</span><br><span>16</span><br><span>17</span><br><span>18</span><br><span>19</span><br><span>20</span><br></pre></td><td><pre><span>(gdb) n</span><br><span>5    for(int j=1;j&lt;=a;j++){</span><br><span>(gdb) p sum</span><br><span>$2 = 0</span><br><span>(gdb) n</span><br><span>6    sum += j;</span><br><span>(gdb) p sum</span><br><span>$3 = 0</span><br><span>(gdb) n</span><br><span>5    for(int j=1;j&lt;=a;j++){</span><br><span>(gdb) p sum</span><br><span>$4 = 1</span><br><span>(gdb) n</span><br><span>6    sum += j;</span><br><span>(gdb) p sum</span><br><span>$5 = 1</span><br><span>(gdb) n</span><br><span>5    for(int j=1;j&lt;=a;j++){</span><br><span>(gdb) p sum</span><br><span>$6 = 3</span><br></pre></td></tr></tbody></table>
+<h3 id="跳入跳出函数">跳入跳出函数<a hidden class="anchor" aria-hidden="true" href="#跳入跳出函数">#</a></h3>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br><span>5</span><br><span>6</span><br><span>7</span><br><span>8</span><br><span>9</span><br><span>10</span><br><span>11</span><br><span>12</span><br><span>13</span><br><span>14</span><br><span>15</span><br><span>16</span><br><span>17</span><br><span>18</span><br><span>19</span><br><span>20</span><br><span>21</span><br><span>22</span><br><span>23</span><br><span>24</span><br><span>25</span><br><span>26</span><br></pre></td><td><pre><span>(gdb) break 13</span><br><span>Breakpoint 1 at 0x693: file example.c, line 13.</span><br><span>(gdb) r</span><br><span>Starting program: /home/andrew/example </span><br><span></span><br><span>Breakpoint 1, main () at example.c:13</span><br><span>13    long sum = func(a);</span><br><span>(gdb) s</span><br><span>func (a=100) at example.c:4</span><br><span>4    long sum = 0;</span><br><span>(gdb) n</span><br><span>5    for(int j=1;j&lt;=a;j++){</span><br><span>(gdb) n</span><br><span>6    sum += j;</span><br><span>(gdb) n</span><br><span>5    for(int j=1;j&lt;=a;j++){</span><br><span>(gdb) n</span><br><span>6    sum += j;</span><br><span>(gdb) finish</span><br><span>Run till exit from #0  func (a=100) at example.c:6</span><br><span>0x000055555555469d in main () at example.c:13</span><br><span>13    long sum = func(a);</span><br><span>Value returned is $1 = 5050</span><br><span>(gdb) n</span><br><span>14    printf("%ld",sum);</span><br><span>(gdb)</span><br></pre></td></tr></tbody></table>
+<p>如上，我在func()函数调用行加上了断点，然后<code>r</code>开始执行程序，之后程序在断点处停住，此时我执行<code>step</code>命令或其简写<code>s</code>来跳入func()函数内部调试，在内部依然像执行外部调试一样，如果要从函数跳出则执行<code>finished</code>，这时会导致函数执行完毕，并且打印出一些函数的返回信息，并且程序停在函数后的第一条语句处。</p>
+<h3 id="监控变量">监控变量<a hidden class="anchor" aria-hidden="true" href="#监控变量">#</a></h3>
+<p>使用<code>watch &lt;varible name&gt;</code>命令可以实现监控变量，使用<code>info watch</code>命令可以查看监控的变量。同时break所拥有的<code>enable</code>,<code>disable</code>,<code>delete</code>等动词对于watch依然使用，且用法大同小异。这里就不再赘述。</p>
+<h3 id="显示变量的值">显示变量的值<a hidden class="anchor" aria-hidden="true" href="#显示变量的值">#</a></h3>
+<p>使用<code>display &lt;varible name&gt;</code>命令可以在每一步执行之后打印变量的当前值,如下:</p>
+<table><tbody><tr><td><pre><span>1</span><br><span>2</span><br><span>3</span><br><span>4</span><br><span>5</span><br><span>6</span><br><span>7</span><br><span>8</span><br><span>9</span><br><span>10</span><br><span>11</span><br><span>12</span><br><span>13</span><br><span>14</span><br><span>15</span><br><span>16</span><br><span>17</span><br><span>18</span><br><span>19</span><br><span>20</span><br><span>21</span><br><span>22</span><br><span>23</span><br><span>24</span><br></pre></td><td><pre><span>(gdb) start </span><br><span>Temporary breakpoint 1 at 0x685: file example.c, line 12.</span><br><span>Starting program: /home/andrew/example </span><br><span></span><br><span>Temporary breakpoint 1, main () at example.c:12</span><br><span>12    int a =100, b =50;</span><br><span>(gdb) display sum</span><br><span>1: sum = 140737488346112</span><br><span>(gdb) n</span><br><span>13    long sum = func(a);</span><br><span>1: sum = 140737488346112</span><br><span>(gdb) </span><br><span>14    printf("%ld",sum);</span><br><span>1: sum = 5050</span><br><span>(gdb) </span><br><span>16    long sum2 = func(b);</span><br><span>1: sum = 5050</span><br><span>(gdb) </span><br><span>17    printf("%ld",sum2);</span><br><span>1: sum = 5050</span><br><span>(gdb) </span><br><span>18    return 0;</span><br><span>1: sum = 5050</span><br><span>(gdb)</span><br></pre></td></tr></tbody></table>
+<h3 id="进入shell">进入shell<a hidden class="anchor" aria-hidden="true" href="#进入shell">#</a></h3>
+<p><code>shell</code>命令可以让我们从gdb命令行环境进入到shell的命令行环境，当我们在shell命令行环境中输入exit退出后，我们就又回到了之前的gdb命令行环境了。</p>
+<h3 id="可视化调试">可视化调试<a hidden class="anchor" aria-hidden="true" href="#可视化调试">#</a></h3>
+<p>在gdb命令行环境中输入<code>wi</code>命令，可以让我们进入可视化调试环境，这个环境可以看到源代码，所使用的调试命令与上面讲到的一致。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://Lsiyu7.github.io/en/tags/gdb/">gdb</a></li>
+    </ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://Lsiyu7.github.io/en/">Siyu&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
