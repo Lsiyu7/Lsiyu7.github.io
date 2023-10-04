@@ -148,6 +148,18 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>Xserve调试方法
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Xserve调试方法 调试前置步骤 1、获取源码 apt source xserver-xorg-core 2、安装相关库依赖 sudo apt build-dep xserver-xorg-core 编译步骤 方法一 1 2 3 DEB_CFLAGS_SET=&#34;-ggdb3 -O0 -fdebug-prefix-map=/home/{pwd}/xserver-xorg=. -fstack-protector-strong -Wformat -Werror=format-security&#34; DEB_CXXFLAGS_SET=&#34;-ggdb3 -O0 -fdebug-prefix-map=/home/{pwd}/xserver-xorg=. -fstack-protector-strong -Wformat -Werror=format-security&#34; dpkg-buildpackage -uc -b 后续需要改动时...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-10-04 21:31:47 +0800 CST'>October 4, 2023</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Siyu</footer>
+  <a class="entry-link" aria-label="post link to Xserve调试方法" href="https://Lsiyu7.github.io/en/posts/tech/xserve%E8%B0%83%E8%AF%95%E6%96%B9%E6%B3%95/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>大端小端序转换
     </h2>
   </header>
